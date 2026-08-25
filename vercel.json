@@ -1,0 +1,17 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/Dutch",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/Dutch",
+      "destination": "/index.html"
+    }
+  ]
+}
