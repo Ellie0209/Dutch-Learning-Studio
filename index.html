@@ -36,6 +36,18 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px}.b
 .mini-score{font-size:13px;color:var(--muted);margin-top:8px}
 @media(max-width:760px){.vocab-grid{grid-template-columns:1fr}.bubble{max-width:94%}}
 
+
+.listen-progress{height:10px;background:#edf1f6;border-radius:999px;overflow:hidden;margin:10px 0 16px}
+.listen-progress i{display:block;height:100%;background:linear-gradient(90deg,#2368c7,#ef7b45);border-radius:999px}
+.listen-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.listen-chip{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef5ff;color:#245ca8;font-size:12px;font-weight:800}
+.transcript{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:12px;background:#f8fbff;display:none}
+.transcript.show{display:block}
+.answer-exp{margin-top:10px;padding:11px 12px;border-radius:13px;background:#f7f9fc;border-left:4px solid #4a86d9}
+.score-card{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.score-card div{padding:10px;border-radius:13px;background:#f4f7fb;text-align:center}
+.score-card b{display:block;font-size:20px;color:var(--navy)}
+
 </style></head><body><div class="app">
 <header><div class="brand">🇳🇱 <div>Nederlands Studio<small data-ko="네덜란드어를 배우고, 네덜란드를 만나요." data-en="Learn Nederlands. Discover Nederland.">네덜란드어를 배우고, 네덜란드를 만나요.</small></div></div><div class="langs"><button class="pill lang active" data-lang="ko">🌐 한국어</button><button class="pill lang" data-lang="en">🌐 English</button></div></header>
 <div class="theme-grid"><button class="theme active"><b>🏘️ Modern NL</b><small data-ko="현대 네덜란드" data-en="Modern Netherlands">현대 네덜란드</small></button><button class="theme"><b>🚲 Daily Life</b><small data-ko="일상 생활" data-en="Daily life">일상 생활</small></button><button class="theme"><b>🌬️ Cities</b><small data-ko="도시와 지역" data-en="Cities & regions">도시와 지역</small></button><button class="theme"><b>🌷 Traditions</b><small data-ko="문화와 전통" data-en="Culture & traditions">문화와 전통</small></button></div>
@@ -274,10 +286,94 @@ window.openLesson=function(level,i){
  $('#saveLessonWriting').onclick=()=>{localStorage.setItem(key,ta.value);wc.textContent+=' · opgeslagen ✓'};
  $('#finishLesson').onclick=()=>{let d=JSON.parse(localStorage.getItem('nl-done')||'{}');d[level+'-'+i]=1;localStorage.setItem('nl-done',JSON.stringify(d));openLevel(level)};
 }
+
+const listeningBank={
+ A1:[
+  {type:'daily',text:'Ik woon in Utrecht en ik ga meestal met de fiets naar mijn werk.',q:'Hoe gaat de spreker meestal naar het werk?',choices:['met de fiets','met de trein','met de auto'],a:0,exp:'De spreker zegt letterlijk: met de fiets naar mijn werk.'},
+  {type:'café',text:'Goedemiddag. Mag ik een koffie en een broodje kaas, alstublieft?',q:'Wat bestelt de spreker?',choices:['koffie en broodje kaas','thee en soep','water en salade'],a:0,exp:'Hij/zij bestelt een koffie en een broodje kaas.'},
+  {type:'time',text:'De afspraak is morgen om half tien.',q:'Wanneer is de afspraak?',choices:['morgen om 9:30','vandaag om 10:30','morgen om 10:00'],a:0,exp:'Half tien betekent 09:30 in het Nederlands.'},
+  {type:'weather',text:'Het regent vandaag, dus neem een paraplu mee.',q:'Wat moet je meenemen?',choices:['een paraplu','een zonnebril','een jas'],a:0,exp:'Omdat het regent, is een paraplu logisch en wordt die ook genoemd.'}
+ ],
+ A2:[
+  {type:'OV',text:'De trein naar Rotterdam vertrekt van spoor vijf. U moet in Delft overstappen.',q:'Waar moet je overstappen?',choices:['in Delft','in Rotterdam','op spoor vijf'],a:0,exp:'De zin zegt: U moet in Delft overstappen.'},
+  {type:'doctor',text:'Ik heb sinds gisteren keelpijn en een beetje koorts.',q:'Welke klachten heeft de spreker?',choices:['keelpijn en koorts','rugpijn en hoest','hoofdpijn en misselijkheid'],a:0,exp:'De spreker noemt keelpijn en een beetje koorts.'},
+  {type:'appointment',text:'Dinsdag kan ik niet. Woensdagmiddag om drie uur komt beter uit.',q:'Wanneer kan de spreker?',choices:['woensdag 15:00','dinsdag 15:00','woensdag 13:00'],a:0,exp:'Woensdagmiddag om drie uur = woensdag 15:00.'},
+  {type:'housing',text:'De huur is negenhonderd euro per maand, inclusief gas en licht.',q:'Wat is inbegrepen?',choices:['gas en licht','internet en water','meubels en internet'],a:0,exp:'Inclusief gas en licht wordt expliciet genoemd.'}
+ ],
+ B1:[
+  {type:'work',text:'Volgens mij moeten we de deadline verplaatsen, omdat het team meer tijd nodig heeft.',q:'Waarom wil de spreker de deadline verplaatsen?',choices:['het team heeft meer tijd nodig','de klant heeft geannuleerd','het project is klaar'],a:0,exp:'De reden wordt gegeven na omdat.'},
+  {type:'news',text:'Door een storing rijden er vanmiddag minder treinen tussen Amsterdam en Utrecht.',q:'Wat is het gevolg van de storing?',choices:['er rijden minder treinen','alle treinen rijden sneller','de stations sluiten'],a:0,exp:'Door de storing rijden er minder treinen.'},
+  {type:'culture',text:'Ik vind Nederlandse directheid prettig, omdat ik dan snel weet waar ik aan toe ben.',q:'Waarom vindt de spreker directheid prettig?',choices:['het geeft snel duidelijkheid','het is altijd beleefd','het voorkomt gesprekken'],a:0,exp:'De spreker zegt dat hij/zij snel weet waar hij/zij aan toe is.'},
+  {type:'complaint',text:'Ik ben niet tevreden over de reparatie. Het probleem is namelijk nog steeds niet opgelost.',q:'Wat is het probleem?',choices:['de reparatie heeft niet geholpen','de rekening is te laag','de afspraak was te vroeg'],a:0,exp:'Het probleem is nog steeds niet opgelost.'}
+ ],
+ B2:[
+  {type:'meeting',text:'Ik begrijp het voorstel, maar ik vraag me af of het binnen deze planning haalbaar is.',q:'Wat is de twijfel van de spreker?',choices:['of de planning haalbaar is','of het voorstel goedkoop is','of de vergadering doorgaat'],a:0,exp:'De spreker twijfelt aan de haalbaarheid binnen de planning.'},
+  {type:'news',text:'Wat mij opvalt, is dat de berichtgeving vooral één perspectief benadrukt en weinig tegenargumenten geeft.',q:'Welke kritiek geeft de spreker?',choices:['de berichtgeving is eenzijdig','de tekst is te kort','de bron is onbekend'],a:0,exp:'Eén perspectief en weinig tegenargumenten wijzen op eenzijdigheid.'},
+  {type:'formal',text:'Naar aanleiding van uw bericht ontvang ik graag nadere informatie over de voorwaarden.',q:'Wat wil de spreker ontvangen?',choices:['meer informatie','een terugbetaling','een afspraak vandaag'],a:0,exp:'Nadere informatie betekent extra/verdere informatie.'},
+  {type:'discussion',text:'Hoewel ik het uitgangspunt begrijp, ben ik het niet eens met de voorgestelde oplossing.',q:'Wat is het standpunt?',choices:['begrip voor uitgangspunt, maar geen instemming','volledige instemming','geen mening'],a:0,exp:'Hoewel markeert concessie; daarna volgt de eigenlijke tegenstelling.'}
+ ],
+ C1:[
+  {type:'professional',text:'Ik kom hier graag op terug, omdat de implicaties voor de verschillende stakeholders nog niet volledig zijn uitgewerkt.',q:'Waarom wil de spreker erop terugkomen?',choices:['de gevolgen zijn nog niet volledig uitgewerkt','de vergadering is afgelopen','de stakeholders zijn afwezig'],a:0,exp:'De implicaties zijn nog niet volledig uitgewerkt.'},
+  {type:'media',text:'De gekozen formulering wekt de indruk van zekerheid, terwijl de onderliggende gegevens daar minder eenduidig over zijn.',q:'Wat is de kernkritiek?',choices:['de formulering klinkt zekerder dan de data rechtvaardigen','de data ontbreken volledig','de tekst is te informeel'],a:0,exp:'De taal suggereert meer zekerheid dan de gegevens toelaten.'},
+  {type:'debate',text:'Toegegeven, de maatregel brengt kosten met zich mee. Daar staat tegenover dat de baten op langere termijn aanzienlijk kunnen zijn.',q:'Welke structuur gebruikt de spreker?',choices:['concessie gevolgd door tegenargument','opsomming zonder mening','persoonlijke anekdote'],a:0,exp:'Eerst wordt een nadeel erkend, daarna wordt een voordeel ertegenover gezet.'},
+  {type:'register',text:'In een formele context zou ik deze zin minder direct formuleren en de kritiek iets meer afzwakken.',q:'Wat adviseert de spreker?',choices:['een diplomatiekere formulering','een kortere zin','meer spreektaal'],a:0,exp:'Minder direct en kritiek afzwakken betekent diplomatieker formuleren.'}
+ ],
+ C2:[
+  {type:'rhetoric',text:'De formulering laat bewust ruimte voor meerdere interpretaties, waardoor de spreker strategisch flexibiliteit behoudt.',q:'Wat is het effect van de formulering?',choices:['strategische interpretatieruimte','volledige duidelijkheid','juridische verplichting'],a:0,exp:'Meerdere interpretaties houden strategische ruimte open.'},
+  {type:'literary',text:'De ironie ontstaat juist doordat de letterlijke betekenis haaks staat op wat de context suggereert.',q:'Waar ontstaat de ironie uit?',choices:['tegenstelling tussen letterlijke betekenis en context','herhaling van hetzelfde woord','een grammaticale fout'],a:0,exp:'Ironie berust hier op de kloof tussen letterlijk en bedoeld.'},
+  {type:'academic',text:'De redenering veronderstelt causaliteit, terwijl de aangehaalde gegevens hooguit een correlatie ondersteunen.',q:'Welke methodologische kritiek wordt gegeven?',choices:['correlatie wordt als causaliteit geïnterpreteerd','de steekproef is te groot','de conclusie is te voorzichtig'],a:0,exp:'De data tonen slechts samenhang, niet noodzakelijk oorzaak-gevolg.'},
+  {type:'variation',text:'De woordkeuze is grammaticaal standaard, maar draagt duidelijke regionale en sociale connotaties.',q:'Wat wordt over de woordkeuze gezegd?',choices:['standaard grammatica met regionale/sociale betekenis','grammaticaal fout','alleen formeel Nederlands'],a:0,exp:'De grammatica is standaard, maar de connotatie varieert regionaal en sociaal.'}
+ ]
+};
+
+function listenState(){
+ return JSON.parse(localStorage.getItem('nl-listen-state')||'{"level":"A1","index":0,"score":0,"done":0}');
+}
+function saveListenState(s){localStorage.setItem('nl-listen-state',JSON.stringify(s))}
+function currentListenLevel(){
+ const d=JSON.parse(localStorage.getItem('nl-done')||'{}');
+ const levels=['A1','A2','B1','B2','C1','C2'];
+ let highest='A1';
+ for(const lv of levels){ if(Object.keys(d).some(k=>k.startsWith(lv+'-'))) highest=lv; }
+ return highest;
+}
+
 function openListening(){
- modal(`<h2>🎧 Luistertraining</h2><p>${lang==='ko'?'실제 네덜란드 생활 속 문장을 두 속도로 들어보세요.':'Listen to practical Dutch at two speeds.'}</p><div class="phrase"><b>Ik woon in Utrecht en ik ga meestal met de fiets naar mijn werk.</b><br><small>I live in Utrecht and usually cycle to work.</small></div><button class="primary" id="slow">🐢 0.65×</button> <button class="primary" id="normal">▶ 0.9×</button><h3>Luistercheck</h3><div class="choice-grid"><button class="choice" data-lq="1">met de fiets</button><button class="choice" data-lq="0">met de trein</button></div><div id="lfb"></div>`);
- $('#slow').onclick=()=>speak('Ik woon in Utrecht en ik ga meestal met de fiets naar mijn werk.',.65);$('#normal').onclick=()=>speak('Ik woon in Utrecht en ik ga meestal met de fiets naar mijn werk.',.9);
- $$('[data-lq]').forEach(b=>b.onclick=()=>$('#lfb').innerHTML=`<div class="feedback">${b.dataset.lq==='1'?'✓ Goed!':'Nog een keer.'}</div>`)
+ let s=listenState();
+ if(!listeningBank[s.level]) s={level:currentListenLevel(),index:0,score:0,done:0};
+ const q=listeningBank[s.level][s.index % listeningBank[s.level].length];
+ const total=listeningBank[s.level].length;
+ modal(`<h2>🎧 Luistertraining · ${s.level}</h2>
+ <div class="listen-meta"><span class="listen-chip">${q.type}</span><span class="listen-chip">${s.index+1}/${total}</span></div>
+ <div class="listen-progress"><i style="width:${(s.index/total)*100}%"></i></div>
+ <p>${lang==='ko'?'먼저 듣고 답한 뒤 transcript를 확인하세요.':'Listen first, answer, then check the transcript.'}</p>
+ <div class="practice-card"><button class="primary" id="slow">🐢 0.65×</button> <button class="primary" id="normal">▶ 0.9×</button> <button class="mini-btn" id="showTranscript">${lang==='ko'?'Transcript 보기':'Show transcript'}</button>
+ <div id="transcript" class="transcript"><b>Transcript</b><p>${q.text}</p></div></div>
+ <h3>Luistervraag</h3><p>${q.q}</p>
+ <div class="choice-grid">${q.choices.map((c,i)=>`<button class="choice" data-lanswer="${i}">${c}</button>`).join('')}</div>
+ <div id="listenFb"></div>
+ <div class="score-card"><div><b>${s.score}</b><small>score</small></div><div><b>${s.done}</b><small>done</small></div><div><b>${s.level}</b><small>level</small></div></div>
+ <button class="primary hidden" id="nextListen">${lang==='ko'?'다음 문제 →':'Next →'}</button>
+ <button class="mini-btn" id="changeLevel">${lang==='ko'?'레벨 변경':'Change level'}</button>`);
+ $('#slow').onclick=()=>speak(q.text,.65); $('#normal').onclick=()=>speak(q.text,.9);
+ $('#showTranscript').onclick=()=>$('#transcript').classList.toggle('show');
+ $$('[data-lanswer]').forEach(b=>b.onclick=()=>{
+   if($('#nextListen').classList.contains('hidden')){
+     const correct=Number(b.dataset.lanswer)===q.a;
+     if(correct){b.classList.add('good');s.score++;} s.done++;
+     $('#listenFb').innerHTML=`<div class="answer-exp"><b>${correct?'✓ Goed!':'Nog een keer.'}</b><p>${q.exp}</p></div>`;
+     $('#transcript').classList.add('show'); $('#nextListen').classList.remove('hidden'); saveListenState(s);
+   }
+ });
+ $('#nextListen').onclick=()=>{
+   s.index++;
+   if(s.index>=total){s.index=0; const order=['A1','A2','B1','B2','C1','C2']; const pos=order.indexOf(s.level); if(pos<5 && s.score>=Math.ceil(total*.7)){s.level=order[pos+1]} s.score=0; s.done=0;}
+   saveListenState(s); openListening();
+ };
+ $('#changeLevel').onclick=()=>{
+   modal(`<h2>${lang==='ko'?'듣기 레벨 선택':'Choose listening level'}</h2><div class="choice-grid">${['A1','A2','B1','B2','C1','C2'].map(l=>`<button class="choice" data-ll="${l}">${l}</button>`).join('')}</div>`);
+   $$('[data-ll]').forEach(b=>b.onclick=()=>{saveListenState({level:b.dataset.ll,index:0,score:0,done:0});openListening()})
+ };
 }
 function openSpeaking(){
  modal(`<h2>🎙️ Uitspraak & spreken</h2><p>g/ch · ui · eu · uu · ij/ei · oe · ou/au · sch · ng</p><div class="phrase"><b>goed · huis · leuk · tijd · school</b><br><button class="mini-btn" id="snd">🔊 voorbeeld</button></div><p>${lang==='ko'?'팁: ui와 eu를 영어식 모음으로 바꾸지 말고, 짧은 단어부터 반복하세요.':'Tip: practise ui and eu in short words before full sentences.'}</p>`);
