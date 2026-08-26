@@ -17,6 +17,25 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px}.b
 
 .lesson-list{display:grid;gap:10px;margin:14px 0}.lesson-row{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:13px;border:1px solid var(--line);border-radius:16px;background:#fff}.lesson-row .num{width:42px;height:42px;border-radius:13px;background:#eef5ff;display:grid;place-items:center;font-weight:900;color:var(--blue)}.lesson-row b{display:block}.lesson-row small{color:var(--muted)}.mini-btn{border:0;border-radius:12px;background:#eef5ff;color:var(--navy);padding:9px 11px;font-weight:800}.progress{height:10px;background:#edf0f4;border-radius:99px;overflow:hidden;margin:8px 0 14px}.progress>i{display:block;height:100%;background:linear-gradient(90deg,#2368c7,#ef7b45);border-radius:99px}.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.choice{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;text-align:left}.choice.good{border-color:#4aa36b;background:#f1fbf4}.feedback{padding:12px;border-radius:14px;background:#f7f9fc;margin-top:10px}.phrase{padding:12px 14px;border:1px solid var(--line);border-radius:14px;margin:8px 0;background:#fff}.phrase b{color:var(--navy)}.profile-stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.profile-stat div{padding:12px 8px;border-radius:14px;background:#f5f8fd;text-align:center}.profile-stat b{display:block;font-size:20px;color:var(--navy)}
 
+
+.lesson-tabs{display:flex;gap:7px;overflow-x:auto;margin:12px 0 14px;padding-bottom:3px}
+.lesson-tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;color:var(--navy);font-weight:800}
+.lesson-tabs button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.lesson-pane{display:none}.lesson-pane.active{display:block}
+.vocab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.vocab-item{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fff}
+.vocab-item b{display:block;color:var(--navy)}
+.dialogue{display:grid;gap:8px}
+.bubble{max-width:88%;padding:11px 13px;border-radius:16px;background:#f1f6ff;border:1px solid #dbe8ff}
+.bubble.alt{margin-left:auto;background:#fff7ee;border-color:#ffe2c7}
+.grammar-box{border:1px solid var(--line);border-radius:14px;padding:12px;margin:8px 0;background:#fff}
+.grammar-box code{background:#f3f5f8;padding:2px 6px;border-radius:7px}
+.practice-card{border:1px solid var(--line);border-radius:14px;padding:12px;margin:9px 0;background:#fff}
+.reading-box{line-height:1.75;border-left:4px solid #4a86d9;background:#f7faff;border-radius:10px;padding:12px}
+.review-check{display:grid;gap:8px}.review-check label{display:flex;gap:9px;align-items:flex-start;padding:9px;border:1px solid var(--line);border-radius:12px}
+.mini-score{font-size:13px;color:var(--muted);margin-top:8px}
+@media(max-width:760px){.vocab-grid{grid-template-columns:1fr}.bubble{max-width:94%}}
+
 </style></head><body><div class="app">
 <header><div class="brand">🇳🇱 <div>Nederlands Studio<small data-ko="네덜란드어를 배우고, 네덜란드를 만나요." data-en="Learn Nederlands. Discover Nederland.">네덜란드어를 배우고, 네덜란드를 만나요.</small></div></div><div class="langs"><button class="pill lang active" data-lang="ko">🌐 한국어</button><button class="pill lang" data-lang="en">🌐 English</button></div></header>
 <div class="theme-grid"><button class="theme active"><b>🏘️ Modern NL</b><small data-ko="현대 네덜란드" data-en="Modern Netherlands">현대 네덜란드</small></button><button class="theme"><b>🚲 Daily Life</b><small data-ko="일상 생활" data-en="Daily life">일상 생활</small></button><button class="theme"><b>🌬️ Cities</b><small data-ko="도시와 지역" data-en="Cities & regions">도시와 지역</small></button><button class="theme"><b>🌷 Traditions</b><small data-ko="문화와 전통" data-en="Culture & traditions">문화와 전통</small></button></div>
@@ -133,6 +152,102 @@ const expandedCourse={
 const course=expandedCourse;
 const levelGoal={A1:'Basiscontact in alledaagse situaties',A2:'Zelfstandig eenvoudige dagelijkse taken uitvoeren',B1:'Meedoen aan gesprekken over vertrouwde onderwerpen',B2:'Vlot en genuanceerd deelnemen aan gesprekken',C1:'Flexibel Nederlands voor studie en werk',C2:'Nagenoeg volledige beheersing van register en nuance'};
 
+
+const levelDepth={
+ A1:{words:8,read:3,write:'3 korte zinnen',label:'Beginner'},
+ A2:{words:10,read:4,write:'4–5 zinnen',label:'Elementary'},
+ B1:{words:12,read:5,write:'5–6 zinnen',label:'Intermediate'},
+ B2:{words:14,read:6,write:'6–8 zinnen',label:'Upper intermediate'},
+ C1:{words:16,read:7,write:'8–10 zinnen',label:'Advanced'},
+ C2:{words:18,read:8,write:'10–12 zinnen',label:'Mastery'}
+};
+
+const commonVocab={
+ A1:['hallo|hello','naam|name','wonen|to live','graag|gladly / please','vandaag|today','morgen|tomorrow','waar|where','hoe|how','tijd|time','goed|good','straat|street','winkel|shop','eten|food','drinken|drink','vriend|friend','werk|work','huis|house','fiets|bike'],
+ A2:['afspraak|appointment','overstappen|transfer','klacht|complaint','huur|rent','bericht|message','rekening|bill','verjaardag|birthday','huisarts|GP','formulier|form','inschrijven|register','meestal|usually','sinds|since','gisteren|yesterday','straks|later','terugbellen|call back','rooster|schedule','cursus|course','betalen|pay'],
+ B1:['mening|opinion','volgens|according to','oplossing|solution','ervaring|experience','tevreden|satisfied','verzetten|reschedule','gewoonte|habit','verschil|difference','daarom|therefore','omdat|because','elkaar|each other','verbeteren|improve','bespreken|discuss','nieuws|news','deadline|deadline','service|service','vertrouwd|familiar','uitleggen|explain'],
+ B2:['nuance|nuance','standpunt|position','toelichten|explain','haalbaar|feasible','betrouwbaarheid|reliability','beleid|policy','voorwaarde|condition','tegemoetkomen|meet halfway','benadrukken|emphasize','daarentegen|on the other hand','formeel|formal','register|register','maatschappij|society','onderhandelen|negotiate','conclusie|conclusion','perspectief|perspective','voorstel|proposal','besluit|decision'],
+ C1:['argumentatie|argumentation','weerlegging|rebuttal','framing|framing','impliciet|implicit','gerechtvaardigd|justified','stakeholder|stakeholder','agenderen|put on agenda','cohesie|cohesion','precisie|precision','ondertoon|undertone','nuanceren|qualify','aannemelijk|plausible','samenvatten|summarize','registerkeuze|register choice','retoriek|rhetoric','interpretatie|interpretation','diplomatiek|diplomatic','tegenstelling|contrast'],
+ C2:['ambiguïteit|ambiguity','sociolect|sociolect','retorisch|rhetorical','validiteit|validity','methodologie|methodology','implicatie|implication','cadans|cadence','concessie|concession','idiomatiek|idiomaticity','equivalent|equivalent','bepaling|provision','premisse|premise','onderstatement|understatement','herformuleren|rephrase','doelgroep|audience','stilistisch|stylistic','interpretatieruimte|room for interpretation','registercontrole|register control']
+};
+
+function vocabFor(level,lesson){
+ const n=levelDepth[level].words;
+ const seed=commonVocab[level];
+ const items=[];
+ for(let i=0;i<n;i++){ const p=seed[(i+lesson)%seed.length].split('|'); items.push({nl:p[0],en:p[1]}); }
+ return items;
+}
+function dialogueFor(level,x){
+ if(level==='A1') return [
+  ['A',x.expr],['B','Ja, natuurlijk.'],['A',x.dialogue],['B','Prima, dank je wel.']
+ ];
+ if(level==='A2') return [
+  ['A',x.expr],['B','Dat kan. Wanneer komt het uit?'],['A',x.dialogue],['B','Prima, dan spreken we dat af.']
+ ];
+ if(level==='B1') return [
+  ['A',x.expr],['B','Waarom denk je dat?'],['A',x.dialogue],['B','Ik begrijp je punt.']
+ ];
+ if(level==='B2') return [
+  ['A',x.expr],['B','Kun je dat iets nader toelichten?'],['A',x.dialogue],['B','Dat is een overtuigend argument.']
+ ];
+ if(level==='C1') return [
+  ['A',x.expr],['B','Welke nuance wil je daarbij aanbrengen?'],['A',x.dialogue],['B','Dat maakt de redenering inderdaad preciezer.']
+ ];
+ return [
+  ['A',x.expr],['B','Welke implicatie heeft die formulering volgens jou?'],['A',x.dialogue],['B','Die lezing is verdedigbaar, al blijft de context doorslaggevend.']
+ ];
+}
+function readingFor(level,x,i){
+ const base={
+ A1:`${x.expr} ${x.dialogue} Vandaag oefen ik Nederlands. Ik gebruik de woorden in een echte situatie.`,
+ A2:`${x.expr} ${x.dialogue} Daarna regel ik wat nodig is en controleer ik de tijd of afspraak. Zo kan ik de situatie zelfstandig afhandelen.`,
+ B1:`${x.expr} ${x.dialogue} Ik leg mijn reden uit en geef een voorbeeld. Daarna luister ik naar de andere persoon en reageer ik passend.`,
+ B2:`${x.expr} ${x.dialogue} In een gesprek is niet alleen de inhoud belangrijk, maar ook de formulering. Daarom kies ik woorden die mijn standpunt duidelijk maar genuanceerd maken.`,
+ C1:`${x.expr} ${x.dialogue} De keuze voor register en formulering bepaalt hoe een boodschap wordt geïnterpreteerd. Een ervaren spreker kan dezelfde inhoud direct, diplomatiek of academisch formuleren, afhankelijk van publiek en doel.`,
+ C2:`${x.expr} ${x.dialogue} Op gevorderd niveau gaat taalbeheersing niet alleen om correctheid, maar ook om stilistische precisie, impliciete betekenis en retorisch effect. De context bepaalt welke formulering het meest doeltreffend en cultureel passend is.`
+ };
+ return base[level];
+}
+function grammarExplain(level,x){
+ const g=x.grammar;
+ const map={
+ A1:`Focus: ${g}. Bouw korte hoofdzinnen: onderwerp + persoonsvorm + rest. Voorbeeld: <code>Ik woon in Utrecht.</code>`,
+ A2:`Focus: ${g}. Let op werkwoordsvorm en tijd. Bij het perfectum gebruik je vaak <code>hebben/zijn + voltooid deelwoord</code>.`,
+ B1:`Focus: ${g}. In een bijzin staat de persoonsvorm vaak later: <code>omdat het tijd bespaart</code>.`,
+ B2:`Focus: ${g}. Combineer hoofd- en bijzinnen en gebruik signaalwoorden om nuance en tegenstelling te markeren.`,
+ C1:`Focus: ${g}. Let op register, cohesie, hedging en precieze formulering; kies bewust tussen direct, diplomatiek en academisch Nederlands.`,
+ C2:`Focus: ${g}. Analyseer stijl, implicatie, retoriek en variatie. Correctheid is niet genoeg; effect en doelgroep bepalen de optimale formulering.`
+ };
+ return map[level];
+}
+function pronunciationTip(level,x){
+ if(level==='A1') return 'Luister naar klemtoon en klinkers. Spreek langzaam en duidelijk; let op g/ch, ui, eu, ij en sch.';
+ if(level==='A2') return 'Let op zinsritme, eindklanken en de uitspraak van voltooid deelwoorden. Herhaal eerst per woordgroep.';
+ if(level==='B1') return 'Oefen natuurlijke zinsintonatie en verbind woorden zonder elke letter afzonderlijk uit te spreken.';
+ if(level==='B2') return 'Oefen contrastieve klemtoon: benadruk precies het woord dat je standpunt of tegenstelling draagt.';
+ if(level==='C1') return 'Werk aan tempo, reductie, natuurlijke pauzes en register. Formeel Nederlands klinkt anders dan informele spreektaal.';
+ return 'Analyseer regionale variatie, retorische pauzes, ironische intonatie en subtiele klemtoonverschillen.';
+}
+function buildLessonHTML(level,i,x){
+ const vocab=vocabFor(level,i);
+ const dlg=dialogueFor(level,x);
+ const read=readingFor(level,x,i);
+ const tabs=['Vocab','Dialogue','Grammar','Pronunciation','Listening','Speaking','Reading','Writing','Quiz','Review'];
+ return `<h2>${level} · ${i+1}. ${x.title}</h2>
+ <p><span class="tag">${levelDepth[level].label}</span> ${levelGoal[level]}</p>
+ <div class="lesson-tabs">${tabs.map((t,n)=>`<button class="${n===0?'active':''}" data-tab="${n}">${t}</button>`).join('')}</div>
+ <div class="lesson-pane active" data-pane="0"><h3>📚 Vocabulary</h3><div class="vocab-grid">${vocab.map(v=>`<div class="vocab-item"><b>${v.nl}</b><small>${v.en}</small><button class="mini-btn" data-say="${v.nl}">🔊</button></div>`).join('')}</div></div>
+ <div class="lesson-pane" data-pane="1"><h3>💬 Dialogue</h3><div class="dialogue">${dlg.map((d,n)=>`<div class="bubble ${n%2?'alt':''}"><b>${d[0]}</b> · ${d[1]}</div>`).join('')}</div><button class="mini-btn" id="hearDialogueAll">🔊 Full dialogue</button></div>
+ <div class="lesson-pane" data-pane="2"><h3>🧩 Grammar</h3><div class="grammar-box"><b>${x.grammar}</b><p>${grammarExplain(level,x)}</p></div><div class="practice-card"><b>Pattern</b><p>${x.expr}</p><p>${x.dialogue}</p></div></div>
+ <div class="lesson-pane" data-pane="3"><h3>🗣️ Pronunciation</h3><div class="practice-card"><p>${pronunciationTip(level,x)}</p><button class="primary" id="hearSlow">🐢 Slow</button> <button class="primary" id="hearNormal">▶ Natural</button></div></div>
+ <div class="lesson-pane" data-pane="4"><h3>🎧 Listening</h3><p>${lang==='ko'?'문장을 듣고 핵심 의미를 확인하세요.':'Listen and identify the key meaning.'}</p><button class="primary" id="listenMain">🔊 Listen</button><div class="choice-grid" style="margin-top:10px"><button class="choice" data-listen-answer="1">${x.title}</button><button class="choice" data-listen-answer="0">Een ander onderwerp</button></div><div id="listenFb"></div></div>
+ <div class="lesson-pane" data-pane="5"><h3>🎙️ Speaking</h3><div class="practice-card"><b>Shadowing</b><p>${x.expr}</p><button class="mini-btn" id="shadow">🔊 voorbeeld</button></div><div class="practice-card"><b>Role play</b><p>${lang==='ko'?'같은 상황에서 상대방에게 한 문장 더 말해 보세요.':'Add one more natural sentence in the same situation.'}</p></div></div>
+ <div class="lesson-pane" data-pane="6"><h3>📖 Reading</h3><div class="reading-box">${read}</div><p><b>Vraag:</b> ${lang==='ko'?'이 글의 핵심 상황은 무엇인가요?':'What is the main situation in this text?'}</p></div>
+ <div class="lesson-pane" data-pane="7"><h3>✍️ Writing</h3><p>${lang==='ko'?`${levelDepth[level].write}로 비슷한 상황을 직접 써보세요.`:`Write ${levelDepth[level].write} for a similar situation.`}</p><textarea id="lessonWriting" class="field" rows="7" placeholder="${x.expr}"></textarea><div id="lessonWC" class="mini-score">0 woorden</div><button class="primary" id="saveLessonWriting">${lang==='ko'?'저장':'Save'}</button></div>
+ <div class="lesson-pane" data-pane="8"><h3>✅ Quiz</h3><p>${lang==='ko'?'가장 자연스러운 표현을 고르세요.':'Choose the most natural expression.'}</p><div class="choice-grid"><button class="choice" data-quiz="1">${x.expr}</button><button class="choice" data-quiz="0">${level==='A1'?'Ik ben koffie.':'Omdat daarom echter.'}</button><button class="choice" data-quiz="0">...</button><button class="choice" data-quiz="0">Niet passend.</button></div><div id="quizFb"></div></div>
+ <div class="lesson-pane" data-pane="9"><h3>🔁 Review</h3><div class="review-check"><label><input type="checkbox"> Vocabulary reviewed</label><label><input type="checkbox"> Dialogue shadowed</label><label><input type="checkbox"> Grammar checked</label><label><input type="checkbox"> Writing completed</label></div><button class="primary" id="finishLesson" style="margin-top:12px">${lang==='ko'?'레슨 완료':'Complete lesson'}</button></div>`;
+}
 function openLevel(level){
  const done=JSON.parse(localStorage.getItem('nl-done')||'{}');
  const lessons=course[level];
@@ -140,34 +255,24 @@ function openLevel(level){
  const count=lessons.filter((_,i)=>done[level+'-'+i]).length;
  modal(`<h2>🇳🇱 ${level} Nederlands</h2><p>${levelGoal[level]}</p><div class="progress"><i style="width:${count/lessons.length*100}%"></i></div><small>${count}/${lessons.length} completed</small><div class="lesson-list">${rows}</div>`);
 }
+
 window.openLesson=function(level,i){
  const x=course[level][i];
- const distractors=[
-   x.expr,
-   level==='A1'?'Tot melk gisteren.':level==='A2'?'Ik afspraak ben maken.':level==='B1'?'Omdat daarom maar.':'Dat formulering nuance ongeveer.',
-   level==='A1'?'Ik is koffie.':level==='A2'?'Gisteren ik werk hebben.':level==='B1'?'Volgens daarom mij omdat.':'Hoewel de nuance echter daarom.',
-   '...'
- ];
- modal(`<h2>${level} · ${i+1}. ${x.title}</h2>
- <div class="phrase"><small>${lang==='ko'?'핵심 표현':'Key expression'}</small><br><b>${x.expr}</b><br><button class="mini-btn" id="hearLesson">🔊 Luister</button></div>
- <div class="phrase"><small>${lang==='ko'?'핵심 어휘':'Vocabulary'}</small><br>${x.vocab}</div>
- <div class="phrase"><small>${lang==='ko'?'문법 포인트':'Grammar focus'}</small><br>${x.grammar}</div>
- <div class="phrase"><small>${lang==='ko'?'미니 대화 / 예문':'Mini dialogue / example'}</small><br><b>${x.dialogue}</b><br><button class="mini-btn" id="hearDialogue">🔊 Luister</button></div>
- <p>${lang==='ko'?'가장 자연스러운 표현을 선택하세요.':'Choose the most natural expression.'}</p>
- <div class="choice-grid">${distractors.map((a,n)=>`<button class="choice" data-answer="${n===0}">${a}</button>`).join('')}</div>
- <div id="lessonFb"></div>
- <button class="primary" id="finishLesson" style="margin-top:14px">${lang==='ko'?'학습 완료':'Complete lesson'}</button>`);
- $('#hearLesson').onclick=()=>speak(x.expr,.72);
- $('#hearDialogue').onclick=()=>speak(x.dialogue,.72);
- $$('.choice').forEach(b=>b.onclick=()=>{
-   $$('.choice').forEach(x=>x.classList.remove('good'));
-   if(b.dataset.answer==='true'){b.classList.add('good');$('#lessonFb').innerHTML='<div class="feedback">✓ Goed! 자연스러운 표현입니다.</div>'}
-   else $('#lessonFb').innerHTML='<div class="feedback">Nog een keer — 다시 생각해 보세요.</div>'
+ modal(buildLessonHTML(level,i,x));
+ $$('.lesson-tabs button').forEach(b=>b.onclick=()=>{
+   $$('.lesson-tabs button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+   $$('.lesson-pane').forEach(p=>p.classList.toggle('active',p.dataset.pane===b.dataset.tab));
  });
- $('#finishLesson').onclick=()=>{
-   let d=JSON.parse(localStorage.getItem('nl-done')||'{}');
-   d[level+'-'+i]=1;localStorage.setItem('nl-done',JSON.stringify(d));openLevel(level)
- }
+ $$('[data-say]').forEach(b=>b.onclick=()=>speak(b.dataset.say,.68));
+ $('#hearDialogueAll').onclick=()=>speak(dialogueFor(level,x).map(d=>d[1]).join('. '),.72);
+ $('#hearSlow').onclick=()=>speak(x.expr,.58); $('#hearNormal').onclick=()=>speak(x.expr,.9);
+ $('#listenMain').onclick=()=>speak(x.dialogue,.78); $('#shadow').onclick=()=>speak(x.expr,.68);
+ $$('[data-listen-answer]').forEach(b=>b.onclick=()=>$('#listenFb').innerHTML=`<div class="feedback">${b.dataset.listenAnswer==='1'?'✓ Goed!':'Nog een keer.'}</div>`);
+ $$('[data-quiz]').forEach(b=>b.onclick=()=>$('#quizFb').innerHTML=`<div class="feedback">${b.dataset.quiz==='1'?'✓ Goed!':'Nog een keer — probeer opnieuw.'}</div>`);
+ const ta=$('#lessonWriting'); const wc=$('#lessonWC'); const key=`nl-write-${level}-${i}`; ta.value=localStorage.getItem(key)||'';
+ const updateWC=()=>wc.textContent=`${(ta.value.trim().match(/\S+/g)||[]).length} woorden`; ta.oninput=updateWC; updateWC();
+ $('#saveLessonWriting').onclick=()=>{localStorage.setItem(key,ta.value);wc.textContent+=' · opgeslagen ✓'};
+ $('#finishLesson').onclick=()=>{let d=JSON.parse(localStorage.getItem('nl-done')||'{}');d[level+'-'+i]=1;localStorage.setItem('nl-done',JSON.stringify(d));openLevel(level)};
 }
 function openListening(){
  modal(`<h2>🎧 Luistertraining</h2><p>${lang==='ko'?'실제 네덜란드 생활 속 문장을 두 속도로 들어보세요.':'Listen to practical Dutch at two speeds.'}</p><div class="phrase"><b>Ik woon in Utrecht en ik ga meestal met de fiets naar mijn werk.</b><br><small>I live in Utrecht and usually cycle to work.</small></div><button class="primary" id="slow">🐢 0.65×</button> <button class="primary" id="normal">▶ 0.9×</button><h3>Luistercheck</h3><div class="choice-grid"><button class="choice" data-lq="1">met de fiets</button><button class="choice" data-lq="0">met de trein</button></div><div id="lfb"></div>`);
