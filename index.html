@@ -44,27 +44,130 @@ function openLevel(lv){modal(`<h2>${lv}</h2><p><b>${examples[lv]}</b></p><button
 const topics={cafe:'Goedemiddag. Mag ik een koffie, alstublieft?',train:'Een retourtje naar Utrecht, alstublieft.',shop:'Heeft u ook volkorenbrood?',plans:'Zullen we zaterdag iets afspreken?'};
 function openTopic(k){modal(`<h2>${topics[k]}</h2><button class="primary" id="hearT">🔊 Luister</button>`);$('#hearT').onclick=()=>speak(topics[k])}
 
-const course={
- A1:[['Groeten & voorstellen','Hallo! Ik heet…','greetings'],['Koffie bestellen','Ik wil graag een koffie.','café'],['Wonen & adres','Ik woon in…','daily life'],['Tijd & afspraken','Hoe laat spreken we af?','plans']],
- A2:[['Boodschappen doen','Heeft u ook…?','shopping'],['Reizen met OV','Waar moet ik overstappen?','transport'],['Bij de huisarts','Ik heb last van…','health'],['Werkdag','Ik begin om negen uur.','work']],
- B1:[['Een mening geven','Volgens mij…','opinion'],['Plannen veranderen','Zullen we het verzetten?','social'],['Wonen & gemeente','Ik wil me inschrijven.','municipality'],['Werkoverleg','Ik ben het ermee eens.','work']],
- B2:[['Nuance & register','Dat ligt iets genuanceerder.','discussion'],['Nieuws bespreken','Wat mij opvalt is…','media'],['Formeel schrijven','Naar aanleiding van…','formal'],['Samenwerken','Zou je kunnen toelichten…?','work']],
- C1:[['Idioom in context','Dat komt goed uit.','idiom'],['Debat & argumentatie','Daar staat tegenover dat…','debate'],['Professioneel Nederlands','Ik kom hier graag op terug.','professional'],['Humor & implicatie','Dat is ook wat.','pragmatics']],
- C2:[['Stijl & precisie','Dat neemt niet weg dat…','style'],['Regionale variatie','accenten en varianten','variation'],['Academisch register','In het licht van…','academic'],['Culturele subtiliteit','tussen de regels door','culture']]
+const expandedCourse={
+'A1':[
+{title:'Groeten & voorstellen',expr:'Hallo! Ik heet Emma.',vocab:'naam, land, taal',grammar:'zijn / heten',dialogue:'Hoi! Ik ben Emma. Hoe heet jij?'},
+{title:'Familie & mensen',expr:'Dit is mijn broer.',vocab:'familie, leeftijd, beroep',grammar:'bezittelijke woorden',dialogue:'Dit is mijn zus. Zij is twintig jaar.'},
+{title:'Getallen & tijd',expr:'Hoe laat is het?',vocab:'getallen, kloktijd, dagen',grammar:'om + tijd',dialogue:'De les begint om negen uur.'},
+{title:'In het café',expr:'Mag ik een koffie, alstublieft?',vocab:'drinken, eten, bestellen',grammar:'willen / mogen',dialogue:'Mag ik een thee? Ja, natuurlijk.'},
+{title:'Boodschappen',expr:'Waar staat de melk?',vocab:'eten, prijzen, hoeveelheden',grammar:'de / het',dialogue:'De melk staat naast het brood.'},
+{title:'Wonen',expr:'Ik woon in Utrecht.',vocab:'huis, kamers, adres',grammar:'er is / er zijn',dialogue:'Er is een keuken en er zijn twee slaapkamers.'},
+{title:'Onderweg',expr:'Waar is het station?',vocab:'richting, straat, station',grammar:'waar / links / rechts',dialogue:'Ga rechtdoor en dan links.'},
+{title:'Dagelijkse routine',expr:'Ik sta om zeven uur op.',vocab:'routine, ochtend, avond',grammar:'scheidbare werkwoorden',dialogue:'Ik sta op, ontbijt en ga naar mijn werk.'},
+{title:'Weer & kleding',expr:'Het regent vandaag.',vocab:'weer, kleding, seizoen',grammar:'het is / ik draag',dialogue:'Het is koud, dus ik draag een jas.'},
+{title:'Vrije tijd',expr:'Ik houd van wandelen.',vocab:'hobby, sport, weekend',grammar:'houden van',dialogue:'In het weekend fiets ik graag.'},
+{title:'Afspreken',expr:'Zullen we zaterdag afspreken?',vocab:'tijd, plaats, uitnodigen',grammar:'zullen we',dialogue:'Ja, leuk! Om drie uur?'},
+{title:'A1 herhaling',expr:'Ik kan mezelf voorstellen.',vocab:'A1 kernwoorden',grammar:'basiszinsbouw',dialogue:'Hallo! Ik heet Sam en ik woon in Leiden.'},
+],
+'A2':[
+{title:'Reizen met OV',expr:'Waar moet ik overstappen?',vocab:'trein, bus, perron',grammar:'moeten / kunnen',dialogue:'U moet in Rotterdam overstappen.'},
+{title:'Een afspraak maken',expr:'Ik wil graag een afspraak maken.',vocab:'datum, tijd, afspraak',grammar:'willen + infinitief',dialogue:'Kan het dinsdag om half tien?'},
+{title:'Bij de huisarts',expr:'Ik heb last van mijn keel.',vocab:'lichaam, klachten, gezondheid',grammar:'hebben + last van',dialogue:'Sinds gisteren heb ik hoofdpijn.'},
+{title:'Huis zoeken',expr:'De huur is inclusief gas en licht.',vocab:'huur, woning, contract',grammar:'bijvoeglijke naamwoorden',dialogue:'Het is een rustig appartement.'},
+{title:'Werkdag',expr:'Ik werk sinds drie maanden hier.',vocab:'werk, collega, rooster',grammar:'perfectum intro',dialogue:'Ik heb vandaag thuisgewerkt.'},
+{title:'Verleden tijd',expr:'Gisteren ben ik naar Amsterdam geweest.',vocab:'activiteiten, weekend',grammar:'perfectum zijn/hebben',dialogue:'We hebben een museum bezocht.'},
+{title:'Telefoon & berichten',expr:'Kun je me later terugbellen?',vocab:'telefoon, app, bericht',grammar:'kunnen / zullen',dialogue:'Ik stuur je straks een bericht.'},
+{title:'Restaurant',expr:'Ik zou graag de soep willen.',vocab:'menu, smaak, betalen',grammar:'zou graag',dialogue:'Mogen we de rekening, alstublieft?'},
+{title:'Feest & verjaardag',expr:'Gefeliciteerd met je verjaardag!',vocab:'cadeau, uitnodiging, feest',grammar:'met + felicitatie',dialogue:'Kom je zaterdag op mijn verjaardag?'},
+{title:'School & cursus',expr:'Ik volg twee keer per week les.',vocab:'studie, huiswerk, docent',grammar:'frequentie',dialogue:'Ik oefen elke dag Nederlands.'},
+{title:'Gemeente',expr:'Ik wil me inschrijven.',vocab:'BRP, formulier, afspraak',grammar:'wederkerend zich',dialogue:'Ik schrijf me in bij de gemeente.'},
+{title:'A2 herhaling',expr:'Ik kan dagelijkse zaken zelfstandig regelen.',vocab:'A2 kernwoorden',grammar:'perfectum + modals',dialogue:'Ik heb gisteren een afspraak gemaakt.'},
+],
+'B1':[
+{title:'Een mening geven',expr:'Volgens mij is dat een goed idee.',vocab:'mening, argument, voorbeeld',grammar:'omdat / daarom',dialogue:'Ik vind het handig omdat het tijd bespaart.'},
+{title:'Werkoverleg',expr:'Ik ben het ermee eens.',vocab:'vergadering, taak, deadline',grammar:'ermee / ermee eens',dialogue:'Kunnen we de deadline verplaatsen?'},
+{title:'Problemen oplossen',expr:'Er is iets mis met de verwarming.',vocab:'probleem, reparatie, klacht',grammar:'zou kunnen',dialogue:'Zou u iemand kunnen sturen?'},
+{title:'Nieuws bespreken',expr:'Heb je het nieuws gezien?',vocab:'nieuws, maatschappij, bron',grammar:'dat-zinnen',dialogue:'Ik hoorde dat de trein staakt.'},
+{title:'Onderwijs',expr:'Ik wil mijn Nederlands verbeteren.',vocab:'opleiding, niveau, examen',grammar:'om te',dialogue:'Ik volg een cursus om beter te schrijven.'},
+{title:'Gezondheid & leefstijl',expr:'Ik probeer gezonder te eten.',vocab:'bewegen, slaap, stress',grammar:'proberen te',dialogue:'Ik probeer elke dag te wandelen.'},
+{title:'Relaties & contact',expr:'We spreken elkaar niet zo vaak.',vocab:'vriendschap, contact, gevoel',grammar:'elkaar',dialogue:'We helpen elkaar als dat nodig is.'},
+{title:'Reizen & ervaringen',expr:'Ik ben nog nooit in Groningen geweest.',vocab:'ervaring, bestemming, cultuur',grammar:'nog nooit / al eens',dialogue:'Ben je al eens op Texel geweest?'},
+{title:'Klacht indienen',expr:'Ik ben niet tevreden over de service.',vocab:'klacht, oplossing, vergoeding',grammar:'formeel verzoek',dialogue:'Ik zou graag een oplossing ontvangen.'},
+{title:'Plannen veranderen',expr:'Zullen we het naar vrijdag verzetten?',vocab:'agenda, wijzigen, annuleren',grammar:'zou / kunnen',dialogue:'Vrijdag komt mij beter uit.'},
+{title:'Cultuur & gewoonten',expr:'Wat vind je van Nederlandse directheid?',vocab:'gewoonte, verschil, cultuur',grammar:'vergelijkingen',dialogue:'In mijn land gaat dat anders.'},
+{title:'B1 herhaling',expr:'Ik kan mijn mening uitleggen en ervaringen beschrijven.',vocab:'B1 kernwoorden',grammar:'bijzinnen',dialogue:'Ik vind het prettig omdat het duidelijk is.'},
+],
+'B2':[
+{title:'Nuance in discussie',expr:'Dat ligt iets genuanceerder.',vocab:'nuance, standpunt, tegenstelling',grammar:'hoewel / terwijl',dialogue:'Hoewel ik het begrijp, ben ik het niet eens.'},
+{title:'Formeel e-mailen',expr:'Naar aanleiding van uw bericht...',vocab:'formeel, verzoek, toelichting',grammar:'formeel register',dialogue:'Graag ontvang ik verdere informatie.'},
+{title:'Vergaderen',expr:'Kun je dat nader toelichten?',vocab:'agenda, voorstel, besluit',grammar:'indirecte vraag',dialogue:'Ik vraag me af of dit haalbaar is.'},
+{title:'Nieuws analyseren',expr:'Wat mij opvalt, is dat...',vocab:'bron, perspectief, betrouwbaarheid',grammar:'nominalisatie intro',dialogue:'De berichtgeving lijkt eenzijdig.'},
+{title:'Werk & carrière',expr:'Ik wil me verder ontwikkelen.',vocab:'functie, competentie, sollicitatie',grammar:'voorwaardelijke zinnen',dialogue:'Als ik de kans krijg, wil ik leidinggeven.'},
+{title:'Maatschappij',expr:'Daar zijn verschillende opvattingen over.',vocab:'beleid, samenleving, debat',grammar:'passief',dialogue:'Er wordt veel over gesproken.'},
+{title:'Humor & pragmatiek',expr:'Dat is ook wat.',vocab:'ironie, toon, implicatie',grammar:'pragmatische betekenis',dialogue:'Dat bedoelde ik niet letterlijk.'},
+{title:'Onderhandelen',expr:'Kunnen we elkaar hierin tegemoetkomen?',vocab:'compromis, voorwaarden, voorstel',grammar:'conditioneel',dialogue:'Als u akkoord gaat, kunnen we starten.'},
+{title:'Presenteren',expr:'Ik wil drie punten benadrukken.',vocab:'structuur, kernpunt, conclusie',grammar:'signaalwoorden',dialogue:'Ten eerste..., daarnaast..., tot slot...'},
+{title:'Schrijven & redigeren',expr:'Deze formulering is te informeel.',vocab:'stijl, cohesie, register',grammar:'verwijswoorden',dialogue:'Daarentegen is dit geschikter voor een rapport.'},
+{title:'Regionale variatie',expr:'Je hoort duidelijke verschillen in uitspraak.',vocab:'accent, regio, variant',grammar:'relatieve zinnen',dialogue:'De variant die je hoort, komt uit Limburg.'},
+{title:'B2 herhaling',expr:'Ik kan spontaan en genuanceerd communiceren.',vocab:'B2 kernwoorden',grammar:'complexe zinsbouw',dialogue:'Hoewel het ingewikkeld is, kan ik mijn standpunt toelichten.'},
+],
+'C1':[
+{title:'Register & stijl',expr:'Deze formulering klinkt afstandelijk.',vocab:'register, toon, stijl',grammar:'stijlkeuze',dialogue:'In een beleidsstuk past een formelere toon.'},
+{title:'Argumentatie',expr:'Daar staat tegenover dat...',vocab:'argument, weerlegging, bewijs',grammar:'concessieve structuren',dialogue:'Toegegeven, het kost geld; daar staat winst tegenover.'},
+{title:'Professioneel Nederlands',expr:'Ik kom hier graag op terug.',vocab:'stakeholder, strategie, overleg',grammar:'vaste formuleringen',dialogue:'Ik stel voor dit punt te agenderen.'},
+{title:'Academisch schrijven',expr:'Uit de resultaten blijkt dat...',vocab:'onderzoek, methode, conclusie',grammar:'academische formuleringen',dialogue:'De gegevens wijzen op een duidelijke trend.'},
+{title:'Media & framing',expr:'De woordkeuze beïnvloedt de interpretatie.',vocab:'framing, retoriek, perspectief',grammar:'impliciete evaluatie',dialogue:'De kop suggereert meer zekerheid dan het artikel.'},
+{title:'Idioom in context',expr:'Dat komt goed uit.',vocab:'idioom, collocatie, vaste uitdrukking',grammar:'idiomatische combinaties',dialogue:'Dat schiet niet echt op.'},
+{title:'Culturele nuance',expr:'Je moet soms tussen de regels door lezen.',vocab:'norm, verwachting, impliciet',grammar:'pragmatiek',dialogue:'De boodschap is vriendelijk, maar toch afwijzend.'},
+{title:'Debat',expr:'Ik betwijfel of die conclusie gerechtvaardigd is.',vocab:'debat, bewijs, premisse',grammar:'hedging',dialogue:'Het lijkt aannemelijk dat...'},
+{title:'Leiderschap & feedback',expr:'Ik waardeer je inzet, maar...',vocab:'feedback, coaching, team',grammar:'diplomatisch taalgebruik',dialogue:'Zou je dit de volgende keer anders kunnen aanpakken?'},
+{title:'Complex luisteren',expr:'Hij nuanceert zijn eerdere standpunt.',vocab:'tempo, nuance, detail',grammar:'discoursmarkeerders',dialogue:'Aan de ene kant..., aan de andere kant...'},
+{title:'Schrijfstijl verfijnen',expr:'Deze alinea kan bondiger.',vocab:'cohesie, precisie, ritme',grammar:'stijlrevisie',dialogue:'De kern kan in één zin worden samengevat.'},
+{title:'C1 herhaling',expr:'Ik kan flexibel schakelen tussen registers.',vocab:'C1 kernwoorden',grammar:'registercontrole',dialogue:'Afhankelijk van de context kies ik een andere formulering.'},
+],
+'C2':[
+{title:'Stijl & retoriek',expr:'Dat neemt niet weg dat...',vocab:'retoriek, stijlmiddel, effect',grammar:'retorische structuren',dialogue:'De formulering versterkt bewust de tegenstelling.'},
+{title:'Subtiele implicatie',expr:'De opmerking is dubbelzinnig.',vocab:'implicatie, ambiguïteit, ondertoon',grammar:'pragmatische inferentie',dialogue:'Hij zegt het niet expliciet, maar suggereert het wel.'},
+{title:'Regionale & sociale variatie',expr:'Die uitspraak verraadt een regionale achtergrond.',vocab:'sociolect, register, identiteit',grammar:'variatieanalyse',dialogue:'De woordkeuze hangt samen met leeftijd en regio.'},
+{title:'Literair Nederlands',expr:'De verteller blijft bewust op afstand.',vocab:'stijlfiguur, perspectief, motief',grammar:'literaire analyse',dialogue:'De herhaling creëert een vervreemdend effect.'},
+{title:'Juridisch & beleidsmatig',expr:'Deze bepaling laat ruimte voor interpretatie.',vocab:'beleid, bepaling, nuance',grammar:'nominale stijl',dialogue:'De uitvoering is onder voorwaarden toegestaan.'},
+{title:'Academisch debat',expr:'De redenering berust op een betwistbare aanname.',vocab:'premisse, methodologie, validiteit',grammar:'kritische formulering',dialogue:'De causaliteit is hiermee niet aangetoond.'},
+{title:'Humor & ironie',expr:'De ironie werkt alleen door de context.',vocab:'ironie, sarcasme, understatement',grammar:'intonatie & context',dialogue:'Letterlijk betekent het iets anders dan bedoeld.'},
+{title:'Vertalen & herformuleren',expr:'De nuance gaat verloren in een letterlijke vertaling.',vocab:'equivalent, nuance, register',grammar:'parafrase',dialogue:'Een natuurlijk equivalent is hier belangrijker.'},
+{title:'Speech & presentatie',expr:'De spreker bouwt spanning op.',vocab:'retorische vraag, cadans, nadruk',grammar:'retorische analyse',dialogue:'De pauze vóór de kernzin vergroot het effect.'},
+{title:'Professionele onderhandeling',expr:'De formulering houdt strategisch ruimte open.',vocab:'strategie, concessie, voorwaarden',grammar:'diplomatieke precisie',dialogue:'We sluiten verdere aanpassingen niet uit.'},
+{title:'Redactie op moedertaalniveau',expr:'Deze zin is correct maar stilistisch zwaar.',vocab:'redactie, ritme, idiomatiek',grammar:'native-like revision',dialogue:'Een kortere formulering leest natuurlijker.'},
+{title:'C2 herhaling',expr:'Ik kan betekenis, stijl en register zeer precies sturen.',vocab:'C2 kernwoorden',grammar:'volledige integratie',dialogue:'Dezelfde boodschap kan bewust anders klinken per doelgroep.'},
+],
 };
+const course=expandedCourse;
 const levelGoal={A1:'Basiscontact in alledaagse situaties',A2:'Zelfstandig eenvoudige dagelijkse taken uitvoeren',B1:'Meedoen aan gesprekken over vertrouwde onderwerpen',B2:'Vlot en genuanceerd deelnemen aan gesprekken',C1:'Flexibel Nederlands voor studie en werk',C2:'Nagenoeg volledige beheersing van register en nuance'};
+
 function openLevel(level){
- const done=JSON.parse(localStorage.getItem('nl-done')||'{}'); const rows=course[level].map((x,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div><b>${x[0]}</b><small>${x[1]} · ${x[2]}</small></div><button class="mini-btn" onclick="openLesson('${level}',${i})">${done[level+'-'+i]?'✓':'Start'}</button></div>`).join('');
- const count=course[level].filter((_,i)=>done[level+'-'+i]).length;
- modal(`<h2>🇳🇱 ${level} Nederlands</h2><p>${levelGoal[level]}</p><div class="progress"><i style="width:${count/4*100}%"></i></div><small>${count}/4 completed</small><div class="lesson-list">${rows}</div>`);
+ const done=JSON.parse(localStorage.getItem('nl-done')||'{}');
+ const lessons=course[level];
+ const rows=lessons.map((x,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div><b>${x.title}</b><small>${x.expr}</small></div><button class="mini-btn" onclick="openLesson('${level}',${i})">${done[level+'-'+i]?'✓':'Start'}</button></div>`).join('');
+ const count=lessons.filter((_,i)=>done[level+'-'+i]).length;
+ modal(`<h2>🇳🇱 ${level} Nederlands</h2><p>${levelGoal[level]}</p><div class="progress"><i style="width:${count/lessons.length*100}%"></i></div><small>${count}/${lessons.length} completed</small><div class="lesson-list">${rows}</div>`);
 }
 window.openLesson=function(level,i){
  const x=course[level][i];
- const q=i%2===0?['Goedemorgen!','Tot gisteren!','Alsjeblieft nooit.','Geen idee.']:['Graag.','Ik heet fiets.','Tot koffie.','Nee straat.'];
- modal(`<h2>${level} · ${x[0]}</h2><div class="phrase"><b>${x[1]}</b><br><button class="mini-btn" id="hearLesson">🔊 Luister</button></div><p>${lang==='ko'?'실제 상황에서 자연스럽게 말해 보세요. 가장 알맞은 표현을 선택하세요.':'Choose the most natural expression for the situation.'}</p><div class="choice-grid">${q.map((a,n)=>`<button class="choice" data-answer="${n===0}">${a}</button>`).join('')}</div><div id="lessonFb"></div><button class="primary" id="finishLesson" style="margin-top:14px">${lang==='ko'?'학습 완료':'Complete lesson'}</button>`);
- $('#hearLesson').onclick=()=>speak(x[1],.72);
- $$('.choice').forEach(b=>b.onclick=()=>{ $$('.choice').forEach(x=>x.classList.remove('good')); if(b.dataset.answer==='true'){b.classList.add('good');$('#lessonFb').innerHTML='<div class="feedback">✓ Goed! 자연스러운 표현입니다.</div>'}else $('#lessonFb').innerHTML='<div class="feedback">Nog een keer — 다시 생각해 보세요.</div>'});
- $('#finishLesson').onclick=()=>{let d=JSON.parse(localStorage.getItem('nl-done')||'{}');d[level+'-'+i]=1;localStorage.setItem('nl-done',JSON.stringify(d));openLevel(level)}
+ const distractors=[
+   x.expr,
+   level==='A1'?'Tot melk gisteren.':level==='A2'?'Ik afspraak ben maken.':level==='B1'?'Omdat daarom maar.':'Dat formulering nuance ongeveer.',
+   level==='A1'?'Ik is koffie.':level==='A2'?'Gisteren ik werk hebben.':level==='B1'?'Volgens daarom mij omdat.':'Hoewel de nuance echter daarom.',
+   '...'
+ ];
+ modal(`<h2>${level} · ${i+1}. ${x.title}</h2>
+ <div class="phrase"><small>${lang==='ko'?'핵심 표현':'Key expression'}</small><br><b>${x.expr}</b><br><button class="mini-btn" id="hearLesson">🔊 Luister</button></div>
+ <div class="phrase"><small>${lang==='ko'?'핵심 어휘':'Vocabulary'}</small><br>${x.vocab}</div>
+ <div class="phrase"><small>${lang==='ko'?'문법 포인트':'Grammar focus'}</small><br>${x.grammar}</div>
+ <div class="phrase"><small>${lang==='ko'?'미니 대화 / 예문':'Mini dialogue / example'}</small><br><b>${x.dialogue}</b><br><button class="mini-btn" id="hearDialogue">🔊 Luister</button></div>
+ <p>${lang==='ko'?'가장 자연스러운 표현을 선택하세요.':'Choose the most natural expression.'}</p>
+ <div class="choice-grid">${distractors.map((a,n)=>`<button class="choice" data-answer="${n===0}">${a}</button>`).join('')}</div>
+ <div id="lessonFb"></div>
+ <button class="primary" id="finishLesson" style="margin-top:14px">${lang==='ko'?'학습 완료':'Complete lesson'}</button>`);
+ $('#hearLesson').onclick=()=>speak(x.expr,.72);
+ $('#hearDialogue').onclick=()=>speak(x.dialogue,.72);
+ $$('.choice').forEach(b=>b.onclick=()=>{
+   $$('.choice').forEach(x=>x.classList.remove('good'));
+   if(b.dataset.answer==='true'){b.classList.add('good');$('#lessonFb').innerHTML='<div class="feedback">✓ Goed! 자연스러운 표현입니다.</div>'}
+   else $('#lessonFb').innerHTML='<div class="feedback">Nog een keer — 다시 생각해 보세요.</div>'
+ });
+ $('#finishLesson').onclick=()=>{
+   let d=JSON.parse(localStorage.getItem('nl-done')||'{}');
+   d[level+'-'+i]=1;localStorage.setItem('nl-done',JSON.stringify(d));openLevel(level)
+ }
 }
 function openListening(){
  modal(`<h2>🎧 Luistertraining</h2><p>${lang==='ko'?'실제 네덜란드 생활 속 문장을 두 속도로 들어보세요.':'Listen to practical Dutch at two speeds.'}</p><div class="phrase"><b>Ik woon in Utrecht en ik ga meestal met de fiets naar mijn werk.</b><br><small>I live in Utrecht and usually cycle to work.</small></div><button class="primary" id="slow">🐢 0.65×</button> <button class="primary" id="normal">▶ 0.9×</button><h3>Luistercheck</h3><div class="choice-grid"><button class="choice" data-lq="1">met de fiets</button><button class="choice" data-lq="0">met de trein</button></div><div id="lfb"></div>`);
@@ -85,7 +188,7 @@ function openVocab(){
 }
 function openProfile(){
  const p=localStorage.getItem('nl-profile')||''; const done=Object.keys(JSON.parse(localStorage.getItem('nl-done')||'{}')).length;
- modal(`<h2>👤 Mijn profiel</h2><input class="field" id="pn" placeholder="Name / nickname" value="${p.replace(/"/g,'&quot;')}"><div class="profile-stat"><div><b>${done}</b><small>lessons</small></div><div><b>${Math.min(100,done*4)}%</b><small>progress</small></div><div><b>A1–C2</b><small>CEFR</small></div></div><p>${lang==='ko'?'학습 기록은 이 기기의 브라우저에 저장됩니다.':'Progress is saved in this browser on this device.'}</p><button class="primary" id="saveP">Save</button>`);
+ modal(`<h2>👤 Mijn profiel</h2><input class="field" id="pn" placeholder="Name / nickname" value="${p.replace(/"/g,'&quot;')}"><div class="profile-stat"><div><b>${done}</b><small>lessons</small></div><div><b>${Math.min(100,Math.round(done/72*100))}%</b><small>progress</small></div><div><b>A1–C2</b><small>CEFR</small></div></div><p>${lang==='ko'?'학습 기록은 이 기기의 브라우저에 저장됩니다.':'Progress is saved in this browser on this device.'}</p><button class="primary" id="saveP">Save</button>`);
  $('#saveP').onclick=()=>{localStorage.setItem('nl-profile',$('#pn').value);closeModal()}
 }
 $$('.lang').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;applyLang()});$$('.theme').forEach(b=>b.onclick=()=>{$$('.theme').forEach(x=>x.classList.remove('active'));b.classList.add('active')});$$('[data-level]').forEach(b=>b.onclick=()=>openLevel(b.dataset.level));$$('[data-topic]').forEach(b=>b.onclick=()=>openTopic(b.dataset.topic));$('#startA1').onclick=()=>openLevel('A1');$('#listenTool').onclick=openListening;$('#speakTool').onclick=openSpeaking;$('#writeTool').onclick=openWriting;$('#vocabTool').onclick=openVocab;
