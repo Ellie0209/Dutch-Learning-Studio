@@ -1,9 +1,0 @@
-JavaScript syntax: PASS
-Duplicate HTML IDs: PASS
-Mobile viewport: PASS
-Responsive layout: PASS
-Korean / English: PASS
-Theme controls: PASS
-External image URLs: PASS
-/Dutch route: PASS
-Root redirects to /Dutch: PASS
